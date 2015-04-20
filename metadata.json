@@ -8,7 +8,8 @@
   "project_page": "https://github.com/puppetlabs/pltraining-bbb",
   "issues_url": "https://github.com/puppetlabs/pltraining-bbb/issues",
   "dependencies": [
-    {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"}
+    {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"},
+    {"name":"puppetlabs-apt"}
   ]
 }
 
