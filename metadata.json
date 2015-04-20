@@ -1,0 +1,14 @@
+{
+  "name": "pltraining-bbb",
+  "version": "0.0.1",
+  "author": "Josh Samuelson",
+  "summary": "Basic installation and setup of BigBlueButton 0.9.0",
+  "license": "Apache 2.0",
+  "source": "http://github.com/puppetlabs/pltraining-bbb",
+  "project_page": "https://github.com/puppetlabs/pltraining-bbb",
+  "issues_url": "https://github.com/puppetlabs/pltraining-bbb/issues",
+  "dependencies": [
+    {"name":"puppetlabs-stdlib","version_requirement":">= 1.0.0"}
+  ]
+}
+
