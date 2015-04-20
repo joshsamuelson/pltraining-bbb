@@ -1,4 +1,5 @@
 # Install Big blue button
+# This is mostly copied from the install script and could be cleaned up to remove all the execs
 class bbb::install{
   # Make sure that we're on en_US.UTF-8
   package{ 'language-pack-en': 
@@ -10,24 +11,23 @@ class bbb::install{
     require => Package['language-pack-en']
   }
 
-  # Multiverse installed by default
-
   # Install LibreOffice ppa
   package{ 'software-properties-common':
     ensure => present,
     before => Apt::Ppa['ppa:libreoffice/libreoffice-4-3']
   }
-
-  apt::ppa { 'ppa:libreoffice/libreoffice-4-3': }
+  apt::ppa { 'ppa:libreoffice/libreoffice-4-3':}
 
   # Add bigbluebutton key and apt repo
-  exec{ 'wget http://ubuntu.bigbluebutton.org/bigbluebutton.asc -O- | sudo apt-key add -':
-    path   => '/usr/bin',
+  exec{ 'add bbb key':
+    command => 'wget http://ubuntu.bigbluebutton.org/bigbluebutton.asc -O- | sudo apt-key add -'
+    path    => '/usr/bin',
   }
   exec{ 'add bbb repo':
     command => 'echo "deb http://ubuntu.bigbluebutton.org/trusty-090/ bigbluebutton-trusty main" | sudo tee /etc/apt/sources.list.d/bigbluebutton.list',
     path    => '/bin:/usr/bin',
-    creates => '/etc/apt/srouces.list.d/bigbluebutton.list'
+    creates => '/etc/apt/srouces.list.d/bigbluebutton.list',
+    require => Exec['add bbb key']
   }
 
   # Install ffmpeg
@@ -59,11 +59,22 @@ class bbb::install{
     path    => '/usr/local/bin/:/usr/bin/:/bin',
     timeout => 0,
     creates => '/usr/local/bin/ffmpeg',
-    require => File['/usr/local/bin/install-ffmpeg.sh'],
+    require => [File['/usr/local/bin/install-ffmpeg.sh'],Apt::Ppa['ppa:libreoffice/libreoffice-4-3']],
   }
 
+  # Install BBB and restart
   package{'bigbluebutton':
     ensure  => present,
     require => [Exec['install-ffmpeg.sh'],Exec['add bbb repo']]
   }
+
+  package{'bbb-check':
+    ensure  => present,
+    require => Package['bigbluebutton']
+  }
+
+  exec{'bbb clean restart':
+    command => 'bbb-conf --clean'
+    path    => '/usr/bin',
+    require => Package['bbb-check'],
 }
