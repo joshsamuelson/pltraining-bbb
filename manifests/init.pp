@@ -21,9 +21,8 @@
 # Copyright 2015 PuppetLabs, unless otherwise noted.
 #
 class bbb {
-  if ::osfamily == 'Ubuntu' {
+  if $::operatingsystemrelease == '14.04'{
+    include apt
     include bbb::install
-  } else {
-    notice("pltraining/bbb is only supported on Ubuntu")
   }
 }
