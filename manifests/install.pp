@@ -20,7 +20,7 @@ class bbb::install{
 
   # Add bigbluebutton key and apt repo
   exec{ 'add bbb key':
-    command => 'wget http://ubuntu.bigbluebutton.org/bigbluebutton.asc -O- | sudo apt-key add -'
+    command => 'wget http://ubuntu.bigbluebutton.org/bigbluebutton.asc -O- | sudo apt-key add -',
     path    => '/usr/bin',
   }
   exec{ 'add bbb repo':
@@ -74,7 +74,8 @@ class bbb::install{
   }
 
   exec{'bbb clean restart':
-    command => 'bbb-conf --clean'
+    command => 'bbb-conf --clean',
     path    => '/usr/bin',
     require => Package['bbb-check'],
+  }
 }
