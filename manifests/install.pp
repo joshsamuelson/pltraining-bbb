@@ -24,10 +24,10 @@ class bbb::install{
   exec{ 'wget http://ubuntu.bigbluebutton.org/bigbluebutton.asc -O- | sudo apt-key add -':
     path   => '/usr/bin',
   }
-
-  apt::source { 'bigbluebutton':
-    location   => 'http://ubuntu.bigbluebutton.org/trusty-090/',
-    repos      => 'bigbluebutton-trusty main',
+  exec{ 'add bbb repo':
+    command => 'echo "deb http://ubuntu.bigbluebutton.org/trusty-090/ bigbluebutton-trusty main" | sudo tee /etc/apt/sources.list.d/bigbluebutton.list',
+    path    => '/bin:/usr/bin',
+    creates => '/etc/apt/srouces.list.d/bigbluebutton.list'
   }
 
   # Install ffmpeg
@@ -54,8 +54,16 @@ class bbb::install{
     mode   => 755
   } 
 
+  # This takes a really long time...
   exec{'install-ffmpeg.sh':
     path    => '/usr/local/bin/:/usr/bin/:/bin',
+    timeout => 0,
+    creates => '/usr/local/bin/ffmpeg',
     require => File['/usr/local/bin/install-ffmpeg.sh'],
+  }
+
+  package{'bigbluebutton':
+    ensure  => present,
+    require => [Exec['install-ffmpeg.sh'],Exec['add bbb repo']]
   }
 }
